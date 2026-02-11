@@ -1,19 +1,21 @@
 from dataset import load_train_dataset
 from config import Config
-from model import ResNet_CIFAR
+from model import ResNet50
 
 import torch
 import torch.optim as optim
+
+from torch.cuda.amp import autocast, GradScaler
 
 cfg = Config()
 
 def train():
     train_dataset = load_train_dataset()
     
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True, num_workers=4)
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True, num_workers=4, pin_memory=True)
     
-    model = ResNet_CIFAR(depth=cfg.depth)
-    model = model.to(cfg.device)
+    model = ResNet50(num_classes=10).to(cfg.device)
+    scaler = GradScaler()
 
     criterion = torch.nn.CrossEntropyLoss() # This takes in 'logits' and do softmax internally
 
@@ -24,23 +26,15 @@ def train():
         weight_decay=cfg.weight_decay,
     )
 
-    '''
-        Divide learning rate by 10 at 32k and 48k interations.
-        
-        The number of training samples is 50,000.
-        The number of batches per epoch is 50000 / 128 = 390 batches
-        After 82 (32k/390) and 123 (48k/390) epochs, divide lr by 10
-    '''
-    scheduler = optim.lr_scheduler.MultiStepLR(
-        optimizer, milestones=[82, 123], gamma=0.1
-    )
+    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=cfg.num_epoch)
 
     device = cfg.device
 
     max_accuracy = None
 
+    model.train()
+
     for epoch in range(cfg.num_epoch):
-        model.train()
         running_loss = 0.0
         correct = 0
         total = 0
@@ -50,10 +44,13 @@ def train():
             targets = targets.to(device)
 
             optimizer.zero_grad()
-            outputs = model(inputs)
-            loss = criterion(outputs, targets)
-            loss.backward()
-            optimizer.step()
+            with autocast():
+                outputs = model(inputs)
+                loss = criterion(outputs, targets)
+
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
 
             running_loss += loss.item() * inputs.shape[0]
             _, predicted = outputs.max(dim=1)
@@ -71,7 +68,7 @@ def train():
         else:
             break
 
-    torch.save(model.state_dict(), f'weight/resnet_{cfg.depth}.pth')
+    torch.save(model.state_dict(), f'weight/resnet50.pth')
     print("Training complete")
 
 

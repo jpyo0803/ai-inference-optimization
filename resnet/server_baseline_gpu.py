@@ -2,7 +2,7 @@ from fastapi import FastAPI, UploadFile, File
 import torch
 from contextlib import asynccontextmanager
 import torchvision.transforms as transforms
-from model import ResNet_CIFAR
+from model import ResNet50
 from PIL import Image
 import io
 import time
@@ -22,8 +22,8 @@ DEVICE = torch.device("cuda")
 async def lifespan(app: FastAPI):
     global model, transform
 
-    model = ResNet_CIFAR(depth=20)
-    weight_path = 'weight/resnet_20.pth'
+    model = ResNet50(num_classes=10)
+    weight_path = 'weight/resnet50.pth'
 
     if os.path.exists(weight_path):
         checkpoint = torch.load(weight_path, map_location=DEVICE)
@@ -39,7 +39,7 @@ async def lifespan(app: FastAPI):
     transform = transforms.Compose([
         transforms.Resize((32, 32)),
         transforms.ToTensor(),
-        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        transforms.Normalize(mean=(0.4914, 0.4822, 0.4465), std=(0.247, 0.243, 0.261)),
     ])
 
     print(f"Model loaded successfully on {DEVICE}.")
