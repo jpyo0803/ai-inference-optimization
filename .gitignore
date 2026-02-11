@@ -4,3 +4,4 @@ venv/
 **/weight/
 **/*.onnx
 **/*.onnx.data
+**/*.plan
