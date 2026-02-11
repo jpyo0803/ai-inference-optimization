@@ -13,11 +13,28 @@
         ```sh
         $ python server_baseline_gpu.py
         ```
+    - ONNX + Triton Inference 서버 모드
+        a. ONNX 모델로 변환
+        ```sh
+        $ python export_onnx.py
+        ```
+        b. Triton Inference 서버 실행 (Docker 필요, gRPC 포트 사용)
+        ```sh
+        $ docker run --gpus all --rm \
+            -p 8001:8001 -p 8002:8002 \
+            -v $(pwd)/model_repository:/models \
+            nvcr.io/nvidia/tritonserver:24.12-py3 \
+            tritonserver --model-repository=/models
+        ```
+        c. Endpoint 서버 실행 (새로운 터미널)
+        ```sh
+        $ python server_onnx_triton_py
+        ```
 3. 제대로 모델 서빙이 준비되어있는지 확인 (새로운 터미널에서)
     ```sh
     $ python clinet_tester.py
     ```
-    실행 결과는 다음과 같이 나옴
+    실행 결과는 다음과 같음
     ```sh
     ========================================
     Total Images Processed: 10000
