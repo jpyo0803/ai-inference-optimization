@@ -5,7 +5,7 @@ from tqdm import tqdm
 import io
 
 # 서버 주소
-URL = "http://localhost:8000/predict"
+URL = "http://localhost:8000/predict_batch"
 
 def run_test():
     # 테스트 데이터셋 로드 (예시: CIFAR10)
@@ -35,15 +35,15 @@ def run_test():
         
         # POST 요청
         try:
-            files = {'file': ('image.jpg', img_bytes, 'image/jpeg')}
+            files = [('files', ('image.jpg', img_bytes, 'image/jpeg'))]
             response = requests.post(URL, files=files)
             response.raise_for_status() # 에러 체크
             
             result = response.json()
             
             # 응답 파싱
-            pred_id = result['class_id']
-            server_time = result['inference_time_sec']
+            pred_id = result['predictions'][0]
+            server_time = result['server_inference_time_sec']
             
             # 정확도 체크 (주의: 모델의 클래스 인덱스와 데이터셋 라벨이 일치한다고 가정)
             if pred_id == label:
