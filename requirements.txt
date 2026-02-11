@@ -1,0 +1,7 @@
+fastapi
+torch
+torchvision
+python-multipart
+uvicorn
+requests
+tqdm
