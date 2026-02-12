@@ -19,7 +19,7 @@ model = None
 transform = None
 request_queue = None # (Input Tensor, Future Object)
 
-QUEUE_SIZE = 100
+QUEUE_SIZE = 1000
 DEVICE = torch.device("cuda")
 
 async def inference_worker():

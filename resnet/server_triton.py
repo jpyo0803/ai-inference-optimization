@@ -10,10 +10,11 @@ import numpy as np
 
 # Triton gRPC 비동기 클라이언트
 import tritonclient.grpc.aio as grpcclient
+import os
 
 # 설정
+MODEL_NAME = os.getenv("MODEL_NAME", "resnet_onnx")  # Triton에 등록한 모델 이름
 TRITON_URL = "localhost:8001"
-MODEL_NAME = "resnet_onnx"  # Triton에 등록한 모델 이름
 INPUT_NAME = "input"        # ONNX export 시 지정한 입력 이름
 OUTPUT_NAME = "output"      # ONNX export 시 지정한 출력 이름
 

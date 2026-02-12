@@ -1,0 +1,17 @@
+FROM nvcr.io/nvidia/tritonserver:24.12-py3
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+COPY docker/requirements_triton.txt .
+RUN pip install --no-cache-dir -r requirements_triton.txt
+
+COPY server_triton.py .
+
+COPY docker/server_triton_start.sh .
+RUN chmod +x server_triton_start.sh
+
+EXPOSE 8000 8001 8002
+
+CMD ["./server_triton_start.sh"]
