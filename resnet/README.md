@@ -8,6 +8,23 @@
 | **ONNX + Triton** | 81.50% | 1.92 ms | 91 MB | FP32 |
 | **TensorRT + Triton** | 81.48% | 1.12 ms | 48 MB | FP16 |
 
+### 성능 실험 2: Stress Test
+**Environment:** NVIDIA GeForce RTX 4060 Ti, Triton Inference Server 24.12
+
+다음 locust 파일 실행 (최대 유저수 50명)
+```sh
+python3 -m locust -f locust_benchmark.py \
+  --headless -u 50 -r 50 \
+  --host http://localhost:8000 \
+  --csv <result CSV filename>
+```
+
+| Model Environment | Throughput (RPS) | Avg Latency (ms) | P50 (Median) | P95 (Tail) | P99 (Worst) | P99.9 (Max) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Baseline (PyTorch)** | 21.29 | 2,020.60 | 2,000 | 2,400 | 2,600 | 3,000 |
+| **ONNX + Triton** | 30.57 | 1,314.47 | 1,300 | 1,600 | 1,700 | 2,000 |
+| **TensorRT + Triton** | **44.27** | **819.61** | **820** | **1,200** | **1,300** | **1,300** |
+
 ## 실행방법
 0. **사전준비**
     ```sh
@@ -52,4 +69,11 @@
 5. **제대로 모델 서빙이 준비되어있는지 확인 (성능 실험 1)**
     ```sh
     $ python clinet_tester.py
+    ```
+6. **Stress Test (성능 실험 2)**
+    ```sh
+    python3 -m locust -f locust_benchmark.py \
+    --headless -u 50 -r 50 \
+    --host http://localhost:8000 \
+    --csv <result CSV filename>
     ```

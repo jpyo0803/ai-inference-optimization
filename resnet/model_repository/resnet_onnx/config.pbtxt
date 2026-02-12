@@ -1,6 +1,6 @@
 name: "resnet_onnx"
 platform: "onnxruntime_onnx"
-max_batch_size: 16
+max_batch_size: 128
 
 input [
   {
@@ -20,7 +20,7 @@ output [
 # Dynamic Batching 활성화
 # Triton이 알아서 요청을 모아서 보냄 (Locust가 보낸 배치를 또 묶을 수도 있음)
 dynamic_batching {
-  preferred_batch_size: [ 4, 8, 16 ]
+  preferred_batch_size: [ 4, 8, 16, 32, 64 ]
   max_queue_delay_microseconds: 100
 }
 
