@@ -1,0 +1,27 @@
+name: "resnet_trt_int8_auto_config"
+platform: "tensorrt_plan"
+max_batch_size: 128
+input {
+  name: "input"
+  data_type: TYPE_FP32
+  dims: 3
+  dims: 32
+  dims: 32
+}
+output {
+  name: "output"
+  data_type: TYPE_FP32
+  dims: 10
+}
+instance_group {
+  count: 4
+  kind: KIND_GPU
+}
+dynamic_batching {
+  preferred_batch_size: 4
+  preferred_batch_size: 8
+  preferred_batch_size: 16
+  preferred_batch_size: 32
+  preferred_batch_size: 64
+  max_queue_delay_microseconds: 1000
+}

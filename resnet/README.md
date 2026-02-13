@@ -2,12 +2,13 @@
 
 ### 성능 실험 1: CIFAR-10 Test Dataset
 **Environment:** NVIDIA GeForce RTX 4060 Ti, Triton Inference Server 24.12
-| 최적화 기법 | Accuracy (%) | Avg Inference Latency (ms) | Model Size (MB) | 모델 경량화 |
-| :--- | :---: | :---: | :---: | :---: |
-| **Baseline (PyTorch)** | 81.55% | 2.41 ms | 91 MB | FP32 |
-| **ONNX + Triton** | 81.50% | 1.92 ms | 91 MB | FP32 |
-| **TensorRT (FP16) + Triton** | 81.48% | 1.12 ms | 48 MB | FP16 |
-| **TensorRT (INT8) + Triton** | 80.51% | 1.19 ms | 26 MB | INT8 |
+| 최적화 기법 | Accuracy (%) | Avg Inference Latency (ms) | Model Size (MB) | 모델 경량화 | 비고 |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Baseline (PyTorch)** | 81.55% | 2.41 ms | 91 MB | FP32 | |
+| **ONNX + Triton** | 81.50% | 1.92 ms | 91 MB | FP32 |  |
+| **TensorRT (FP16) + Triton** | 81.48% | 1.12 ms | 48 MB | FP16 |  |
+| **TensorRT (INT8) + Triton** | 80.51% | 1.19 ms | 26 MB | INT8 | |
+| **TensorRT (INT8) + Triton (+Auto Config)** | 80.51% | 2.16 ms | 26 MB | INT8 | Throughput-oriented 설정으로 인한 단일 요청 레이턴시 증가 |
 
 ### 성능 실험 2: Stress Test
 **Environment:** NVIDIA GeForce RTX 4060 Ti, Triton Inference Server 24.12
@@ -26,6 +27,7 @@ python3 -m locust -f locust_benchmark.py \
 | **ONNX + Triton** | 30.57 | 1,314.47 | 1,300 | 1,600 | 1,700 | 2,000 |
 | **TensorRT (FP16) + Triton** | 44.27 | 819.61 | 820 | 1,200 | 1,300 | 1,300 |
 | **TensorRT (INT8) + Triton** | **48.23** | **732.42** | **730** | **1,000** | **1,100** | **1,200** |
+| **TensorRT (INT8) + Triton (+Auto Config)** | **48.84** | **719.24** | **720** | **1,000** | **1,200** | **1,300** |
 
 ## 실행방법
 0. **사전준비**
@@ -78,4 +80,8 @@ python3 -m locust -f locust_benchmark.py \
     --headless -u 50 -r 50 \
     --host http://localhost:8000 \
     --csv <result CSV filename>
+    ```
+7. **Triton Model Analyzer 실행법 (Auto Configuration)**
+    ```sh
+    $ ./run_model_analyzer.sh
     ```

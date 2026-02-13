@@ -5,3 +5,5 @@ venv/
 **/*.onnx
 **/*.onnx.data
 **/*.plan
+model_analyzer/checkpoints/
+model_analyzer/results/
