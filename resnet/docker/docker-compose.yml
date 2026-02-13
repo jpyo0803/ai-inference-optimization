@@ -71,7 +71,7 @@ services:
               capabilities: [gpu]
     
     environment:
-      - MODEL_NAME=resnet_trt
+      - MODEL_NAME=resnet_trt_int8
       - TRITON_URL=localhost:8001
 
     ports:

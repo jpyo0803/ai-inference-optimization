@@ -6,7 +6,8 @@
 | :--- | :---: | :---: | :---: | :---: |
 | **Baseline (PyTorch)** | 81.55% | 2.41 ms | 91 MB | FP32 |
 | **ONNX + Triton** | 81.50% | 1.92 ms | 91 MB | FP32 |
-| **TensorRT + Triton** | 81.48% | 1.12 ms | 48 MB | FP16 |
+| **TensorRT (FP16) + Triton** | 81.48% | 1.12 ms | 48 MB | FP16 |
+| **TensorRT (INT8) + Triton** | 80.51% | 1.19 ms | 26 MB | INT8 |
 
 ### 성능 실험 2: Stress Test
 **Environment:** NVIDIA GeForce RTX 4060 Ti, Triton Inference Server 24.12
@@ -23,7 +24,8 @@ python3 -m locust -f locust_benchmark.py \
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Baseline (PyTorch)** | 21.29 | 2,020.60 | 2,000 | 2,400 | 2,600 | 3,000 |
 | **ONNX + Triton** | 30.57 | 1,314.47 | 1,300 | 1,600 | 1,700 | 2,000 |
-| **TensorRT + Triton** | **44.27** | **819.61** | **820** | **1,200** | **1,300** | **1,300** |
+| **TensorRT (FP16) + Triton** | 44.27 | 819.61 | 820 | 1,200 | 1,300 | 1,300 |
+| **TensorRT (INT8) + Triton** | **48.23** | **732.42** | **730** | **1,000** | **1,100** | **1,200** |
 
 ## 실행방법
 0. **사전준비**
