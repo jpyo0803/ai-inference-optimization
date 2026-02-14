@@ -6,8 +6,10 @@
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Baseline (PyTorch)** | 81.55% | 2.41 ms | 91 MB | FP32 | |
 | **ONNX + Triton** | 81.50% | 1.92 ms | 91 MB | FP32 |  |
-| **TensorRT (FP16) + Triton** | 81.48% | 1.12 ms | 48 MB | FP16 |  |
-| **TensorRT (INT8) + Triton** | 80.51% | 1.19 ms | 26 MB | INT8 | |
+| **TensorRT (FP16) + Triton** | 81.48% | 1.12 ms | 48 MB | FP16 | |
+| **TensorRT (INT8, EntropyCalibrator2) + Triton** | 57.31% | 1.28 ms | 26 MB | INT8 | |
+| **TensorRT (INT8, MinMaxCalibrator) + Triton** | 76.61% | 1.25 ms | 26 MB | INT8 | |
+| **TensorRT (INT8, Default Calibrator) + Triton** | 80.51% | 1.19 ms | 26 MB | INT8 | |
 | **TensorRT (INT8) + Triton (+Auto Config)** | 80.51% | 2.16 ms | 26 MB | INT8 | Throughput-oriented 설정으로 인한 단일 요청 레이턴시 증가 |
 
 ### 성능 실험 2: Stress Test
@@ -85,3 +87,9 @@ python3 -m locust -f locust_benchmark.py \
     ```sh
     $ ./run_model_analyzer.sh
     ```
+8. **Int8 Calibration**
+    a. Calibrated Model 생성 (현재는 MinMaxCalibrator 사용, EntropyCalibrator2 사용하려면 calibrator를 CIFAR10EntropyCalibrator로 교체), tensorrt 버전 10.7.0 사용 (tritonserver:24.12와 호환)
+        ```sh
+        $ python3 calibrate_int8.py
+        ```
+    b. ```resnet_cifar10_int8.engine``` 파일을 ```model.plan```으로 이름 변경 후 ```model_repository/resnet_trt_int8_calibrated/1```에 저장

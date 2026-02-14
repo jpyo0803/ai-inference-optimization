@@ -8,3 +8,5 @@ tqdm
 locust
 onnxscript
 tritonclient[grpc]
+tensorrt
+pycuda
