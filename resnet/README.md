@@ -83,13 +83,13 @@ python3 -m locust -f locust_benchmark.py \
     --host http://localhost:8000 \
     --csv <result CSV filename>
     ```
-7. **Triton Model Analyzer 실행법 (Auto Configuration)**
+7. **How to run Triton Model Analyzer (Auto Configuration)**
     ```sh
     $ ./run_model_analyzer.sh
     ```
 8. **Int8 Calibration**
-    a. Calibrated Model 생성 (현재는 MinMaxCalibrator 사용, EntropyCalibrator2 사용하려면 calibrator를 CIFAR10EntropyCalibrator로 교체), tensorrt 버전 10.7.0 사용 (tritonserver:24.12와 호환)
+    - Calibrated Model 생성 (현재는 MinMaxCalibrator 사용, EntropyCalibrator2 사용하려면 calibrator를 CIFAR10EntropyCalibrator로 교체), tensorrt 버전 10.7.0 사용 (tritonserver:24.12와 호환)
         ```sh
         $ python3 calibrate_int8.py
         ```
-    b. ```resnet_cifar10_int8.engine``` 파일을 ```model.plan```으로 이름 변경 후 ```model_repository/resnet_trt_int8_calibrated/1```에 저장
+    - ```resnet_cifar10_int8.engine``` 파일을 ```model.plan```으로 이름 변경 후 ```model_repository/resnet_trt_int8_calibrated/1```에 저장
